@@ -1,0 +1,86 @@
+/*----- default transitions ------*/
+@mixin transition($transition-property, $transition-time, $method) {
+	-webkit-transition: $transition-property $transition-time $method;
+	-moz-transition: $transition-property $transition-time $method;
+	-ms-transition: $transition-property $transition-time $method;
+	-o-transition: $transition-property $transition-time $method;
+	transition: $transition-property $transition-time $method;
+}
+/*----- border-radius ------*/
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+// Single side border-radius
+@mixin border-radii($topleft, $topright, $bottomright, $bottomleft) {
+	border-top-left-radius: $topleft;
+	border-top-right-radius: $topright;
+	border-bottom-right-radius: $bottomright;
+	border-bottom-left-radius: $bottomleft;
+	-webkit-border-top-left-radius: $topleft;
+	-webkit-border-top-right-radius: $topright;
+	-webkit-border-bottom-right-radius: $bottomright;
+	-webkit-border-bottom-left-radius: $bottomleft;
+	-moz-border-radius-topleft: $topleft;
+	-moz-border-radius-topright: $topright;
+	-moz-border-radius-bottomright: $bottomright;
+	-moz-border-radius-bottomleft: $bottomleft;
+}
+/*----- box model ------*/
+@mixin box-sizing($box-model) {
+  -webkit-box-sizing: $box-model; // Safari <= 5
+     -moz-box-sizing: $box-model; // Firefox <= 19
+          box-sizing: $box-model;
+}
+/*----- opacity with ie8 fallback ------*/
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
+/*----- Box-shadow ------*/
+@mixin box-shadow($left, $top, $radius, $color) {
+	box-shadow: $left $top $radius $color;
+	-webkit-box-shadow: $left $top $radius $color;
+	-moz-box-shadow: $left $top $radius $color;
+}
+/*----- Box-shadow inset ------*/
+@mixin box-shadow-inset($left, $top, $radius, $color) {
+	box-shadow: $left $top $radius $color inset;
+	-webkit-box-shadow: $left $top $radius $color inset;
+	-moz-box-shadow: $left $top $radius $color inset;
+}
+/*----- Gradients background vertical------*/
+@mixin gradient($from, $to) {
+  background: -webkit-gradient(linear, left top, left bottom, from($from), to($to));
+  background: -moz-linear-gradient(top,  $from, $to);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$from}', endColorstr='#{$to}');
+}
+// Horizontal gradient, from left to right
+//
+// Creates two color stops, start and end, by specifying a color and position for each color stop.
+// Color stops are not available in IE9 and below.
+@mixin gradient-horizontal($from, $top, $start-percent: 0%, $end-percent: 100%) {
+  background-image: -webkit-linear-gradient(left, $from $start-percent, $top $end-percent); // Safari 5.1-6, Chrome 10+
+  background-image: -o-linear-gradient(left, $from $start-percent, $top $end-percent); // Opera 12
+  background-image: linear-gradient(to right, $from $start-percent, $top $end-percent); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($from)}', endColorstr='#{ie-hex-str($top)}', GradientType=1); // IE9 and down
+}
+/*----- Placeholder mixins ------*/
+@mixin placeholder-color($color) {
+  &::-webkit-input-placeholder { /* WebKit browsers */
+      color: $color;
+  }
+  &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+      color: $color;
+  }
+  &::-moz-placeholder { /* Mozilla Firefox 19+ */
+      color: $color;
+  }
+  &:-ms-input-placeholder { /* Internet Explorer 10+ */
+      color: $color;
+  }
+}

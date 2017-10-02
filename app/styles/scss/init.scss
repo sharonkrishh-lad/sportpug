@@ -1,0 +1,76 @@
+//misc settings
+@import 'config/_settings';
+@import 'config/_mixins';
+@import 'config/_variables';
+
+//frameworks
+
+//global things
+@import 'general/_reset';
+@import 'layout/_main';
+/* ==========================================================================
+Html and body styles
+========================================================================== */
+body{
+    background-color: $yellowlight-color !important;
+}
+/* ==========================================================================
+HeaderPanel styles
+========================================================================== */
+.headerPanel{
+    background-color: $white-color;
+    @include box-shadow;
+    height: 80px;
+    .headerPanel__container{
+        & > *{
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .headLeft__section{
+            float: left;
+            & > *{
+                display: inline-block;
+                vertical-align: middle;
+            }
+            .app__brandName{}
+            .mainMenu{
+                nav{
+                   ul{
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                    li{
+                        list-style: none;
+                        float: left;
+                        a{
+                            color: $text-color;
+                            line-height: 80px;
+                        }
+                    }
+                   }
+                }
+            }
+        }
+        .headRight__section{
+            float: right;
+            .headRight__section__nav{
+                & > div{
+                    display: block;
+                    float: left;
+                    line-height: 80px;
+                    padding: 0 10px;
+                    .nav{
+                        & > li > a{
+                            padding: 0;
+                            line-height: 80px;
+                        }
+                    }
+                }
+                & > div:last-child{
+                    padding-right: 0;
+                    padding-left: 20px;
+                }
+            }
+        }
+    }
+}

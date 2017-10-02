@@ -1,0 +1,124 @@
+
+// @media min-width
+// @media max-width
+// @media min-width and max-width
+
+$viewport-increment: 1px; // customize to suite
+
+// Large Screen
+$screen: 1200px; // customize to suite
+$pre-screen: $screen - $viewport-increment;
+
+// Desktop
+$desktop: 992px; // customize to suite
+$pre-desktop: $desktop - $viewport-increment;
+
+// Tablet
+$tablet: 768px; // customize to suite
+$pre-tablet: $tablet - $viewport-increment;
+
+// Palm
+$palm: 640px; // customize to suite
+$post-palm: $palm - $viewport-increment;
+
+// Shpify Mobile
+$shopify-mobile: 749px;
+
+// Mobile
+$mobile: 480px;
+
+// Constraints
+$min: min-width;
+$max: max-width;
+
+
+// ==================================================
+// $Media Query @Mixin
+// ==================================================
+
+@mixin mediaQuery($constraint, $viewport1, $viewport2: null) {
+
+  @if $constraint == $min {
+
+    @media screen and ($min: $viewport1) {
+      @content;
+    }
+
+  } @else if $constraint == $max {
+
+    @media screen and ($max: $viewport1) {
+      @content;
+    }
+
+  } @else {
+
+    @media screen and ($min: $viewport1) and ($max: $viewport2) {
+      @content;
+    }
+
+  }
+
+}
+
+// @include mediaQuery($max, $pre-tablet){
+// .app__topbar__brand{
+//     width: 60px;
+// }
+// .largeViewMenu, .app__nav__left{
+//     display: none;
+// }
+// .app__navigations .user__box .navbar-nav li{
+//     float: left;
+// }
+// .brand__name {
+//     display:block;
+//     visibility:hidden;
+//     text-indent: 22px;
+// }
+// .brand__name:first-letter {
+//     visibility:visible;
+// }
+// .app__contentpage{
+//     width: 100%;
+//     margin-left: 0;
+// }
+// .app__contentpage__wrapper{
+//     padding-top: 20px;
+// }
+// .app__actions__panelStatus {
+//     top: 20px;
+// }
+// .panel__title__row .breadcrumb{
+//     display: none;
+// }
+// .panel__title__row{
+//     height: 32px;
+// }
+// .button {
+//     padding: 8px 12px;
+//     font-size: 12px;
+// }
+// .smallViewMenu .main__nav ul li a{
+//     text-align: left;
+//     padding-left: 15px;
+//     padding-right: 15px;
+// }
+// .main__nav ul li a .main__nav__icon, .main__nav .router-link-exact-active.router-link-active .main__nav__icon{
+//     display: inline;
+//     margin:0 5px 0 0;
+// }
+// .smallViewMenu .main__nav ul li a>* {
+//     display: inline-block;
+//     vertical-align: middle;
+// }
+// }
+// @include mediaQuery(null, $palm, $pre-tablet){
+// .sideCanvas__right{
+//     width: 70%;
+// }
+// }
+// @include mediaQuery($max, $mobile){
+// .sideCanvas__right{
+//     width: 100%;
+// }
+// }
