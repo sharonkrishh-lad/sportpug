@@ -1,26 +1,114 @@
 //misc settings
 @import 'config/_settings';
 @import 'config/_mixins';
+@import 'config/_resize';
 @import 'config/_variables';
-
-//frameworks
-
-//global things
+@import 'general/_ui-element';
 @import 'general/_reset';
-@import 'layout/_main';
+@import 'general/_megamenu';
+@import 'pages/_product-list';
+/* ==========================================================================
+    Normalize css
+========================================================================== */
+img{
+    max-width: 100%;
+}
+a{
+    text-decoration: none !important;
+}
+/* ==========================================================================
+   Extendable styles 
+========================================================================== */
+%cardBox{
+    background-color: $white-color;
+    @include box-shadow(0px, 1px, 3px, rgba(0, 0, 0, 0.16)); 
+}
+%table{
+    display: table;
+    table-layout: fixed;
+    width: 100%; 
+}
+
+%tablerow{
+    display: table-row;
+}
+%tablecell{
+    display: table-cell;
+    vertical-align: middle;
+}
+%listfix{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
 /* ==========================================================================
 Html and body styles
 ========================================================================== */
+html, body{
+    height: 100%;
+}
 body{
     background-color: $yellowlight-color !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: normal;
+    font-size: 14px;
+    color: $text-color !important;
+}
+.curtain-mask {
+    background: rgba(0,0,0,0.4);
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
 }
 /* ==========================================================================
-HeaderPanel styles
+    HeaderPanel styles
 ========================================================================== */
 .headerPanel{
     background-color: $white-color;
-    @include box-shadow;
+    @include box-shadow(0px, 0px, 3px, rgba(0, 0, 0, 0.16));
+    position: fixed;
+    width: 100%;
+    top:0;
+    z-index: 9999;
     height: 80px;
+    @include mediaQuery($max, $pre-tablet){
+        height: 60px;
+    }
+    &.search-open{
+        .headLeft__section{
+            .mainMenu{
+                display: none;
+            }
+        }
+        .headRight__section{
+            @include mediaQuery($max, $pre-tablet){
+                width: 100%;
+                right: 0 !important;
+                .headRight__section__nav__search{
+                    width: 100%;
+                    form{
+                        position: absolute;
+                        z-index: 99999;
+                        width: 100%;
+                        padding: 0 15px;
+                        input{
+                            width: 100% !important;
+                            color: $text-color;
+                        }
+                    }
+                }
+                .hs__cart{
+                    display: none;
+                }
+            }
+        }
+    }
     .headerPanel__container{
         & > *{
             display: inline-block;
@@ -28,23 +116,41 @@ HeaderPanel styles
         }
         .headLeft__section{
             float: left;
+            @include mediaQuery($max, $pre-tablet){
+               text-align: center;
+               width: 100%;
+            }
             & > *{
                 display: inline-block;
                 vertical-align: middle;
             }
-            .app__brandName{}
+            .app__brandName{
+                padding: 16px 0px;
+                @include mediaQuery($max, $pre-tablet){
+                    padding: 5px 0;
+                }
+            }
             .mainMenu{
+                margin-left: 20px;
+                @include mediaQuery($max, $pre-tablet){
+                    display: none;
+                }
+                @include mediaQuery($min, $tablet){
+                    margin-left: 0;
+                }
                 nav{
-                   ul{
+                   &>ul{
                     list-style: none;
                     margin: 0;
                     padding: 0;
-                    li{
+                    &>li{
                         list-style: none;
                         float: left;
-                        a{
+                        margin-left:20px;
+                        line-height: 80px;
+                        &>a{
                             color: $text-color;
-                            line-height: 80px;
+                            font-weight: 500;
                         }
                     }
                    }
@@ -53,22 +159,760 @@ HeaderPanel styles
         }
         .headRight__section{
             float: right;
+            padding: 15px 0px;
+            color: $graylight-color;
+            @include mediaQuery($max, $pre-tablet){
+                position: absolute;
+                top:0;
+                right:15px;
+                padding: 5px 0;
+             }
             .headRight__section__nav{
+                @include clearfix;
                 & > div{
                     display: block;
                     float: left;
-                    line-height: 80px;
-                    padding: 0 10px;
-                    .nav{
-                        & > li > a{
-                            padding: 0;
-                            line-height: 80px;
+                    padding: 0 20px;
+                    @include mediaQuery($max, $pre-tablet){
+                        padding: 0;
+                    }
+                    height: 50px;
+                    position: relative;
+                    &:after{
+                        position: absolute;
+                        content: '';
+                        height: 30px;
+                        width: 1px;
+                        background-color: $border-color;
+                        right: 0;
+                        top:50%;
+                        margin-top:-15px;
+                        @include mediaQuery($max, $pre-tablet){
+                            content: initial;
+                        }
+                    }
+                    &.userInfo{
+                        @include mediaQuery($max, $pre-tablet){
+                            display: none !important;
+                        }
+                        .nav{
+                            margin-right: 0;
+                            .dropdown{
+                                .dropdown-toggle{
+                                    color: $graylight-color;
+                                    line-height: 50px;
+                                    i{
+                                        font-size: 24px;
+                                    }
+                                }
+                            }
+                            & > li > a{
+                                padding: 0;
+                            }
+                        }
+                    }
+                    &>.hs__cart{
+                        .hs__cart__icon{
+                            font-size: 30px;
+                            position: relative;
+                            margin-top: 6px;
+                        }
+                        .hs__cart__number{
+                            position: absolute;
+                            top: -12px;
+                            right: 0px;
+                            width: 20px;
+                            height: 20px;
+                            background-color: $secondary-color;
+                            color: $white-color;
+                            font-size: 10px;
+                            font-weight: 300;
+                            line-height: 20px;
+                            text-align: center;
+                            @include border-radius(50px);
                         }
                     }
                 }
                 & > div:last-child{
                     padding-right: 0;
                     padding-left: 20px;
+                    @include mediaQuery($max, $pre-tablet){
+                        padding-left: 10px;
+                    }
+                    border: none;
+                    &:after{
+                        display: none;
+                    }
+                }
+                a{
+                    color:$graylight-color;
+                }
+                .headRight__section__nav__search{
+                    form{
+                        input[type=search] {
+                            -webkit-appearance: textfield;
+                            font-family: inherit;
+                            font-size: 100%;
+                            border: solid 1px $border-color;
+                            padding:10px 40px 10px 10px;
+                            width: 260px;
+                            height: 50px;
+                            outline: none;
+                            background-image: url(../images/hs__search-icon.png);
+                            background-repeat: no-repeat;
+                            background-position: calc(100% + -10px) center;
+                            @include mediaQuery($min, $tablet){
+                                @include transition(all, 0.3s, cubic-bezier(0.99, 0.44, 0.24, 0.84));
+                            }
+                            @include mediaQuery($max, $pre-tablet){
+                                transition: none;
+                                font-size: 24px;
+                                font-weight: 300;
+                            }
+                            &:focus{
+                                width: 580px;
+                                background-color: $white-color;
+                            }
+                            @include mediaQuery($max, $pre-tablet){
+                                width: 45px;
+                                border: none;
+                                &:focus{
+                                    width: 200px;
+                                }
+                            }
+                        } 
+                    }
+                    i{
+                        font-size: 24px;
+                    }
+                }
+            }
+        }
+    }
+}
+.main-content{
+    margin-top: 80px;
+    @include mediaQuery($max, $pre-tablet){
+        margin-top: 60px;
+    }
+}
+/* ==========================================================================
+    SliderPanel styles
+========================================================================== */
+/* custom css */
+.slick-slider{
+    .slick-arrow{
+        position: absolute;
+        z-index: 2;
+        background-color: transparent;
+        @include border-radius(50px);
+        width:50px;
+        height: 50px;
+        border:3px solid $graylight-color;
+        top:50%;
+        margin-top: -25px;
+        outline: none;
+        font:0/0 normal;
+        color: $graylight-color;
+        @include opacity(0.5)
+        @include transition(all, 0.3s, cubic-bezier(0.99, 0.44, 0.24, 0.84));
+        &:hover{
+            @include opacity(1)
+        }
+        &.slick-prev{
+            left:10px;
+            &:after{
+                display: inline-block;
+                font-family: "Ionicons";
+                speak: none;
+                content: '\f124';
+                font-size: 20px;
+                text-align: center;
+                line-height: 42px;
+            }
+        }
+        &.slick-next{
+            right:10px;
+            &:after{
+                display: inline-block;
+                font-family: "Ionicons";
+                speak: none;
+                content: '\f125';
+                font-size: 20px;
+                line-height: 42px;
+                text-align: center;
+            }
+        }
+    }
+    .slick-dots{
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        text-align: center;
+        width: 100%;
+        bottom: 20px;
+        li{
+           display: inline-block;
+           vertical-align: middle;
+           margin: 0px 5px;
+        }
+        li > button{
+            border: none;
+            background-color: $graylight-color;
+            @include border-radius(50px);
+            font:0/0 mormal;
+            outline: none;
+            width: 8px;
+            height: 8px;
+            padding: 0 !important; 
+        }
+        li.slick-active > button{
+            background-color: $primary-color;
+        }
+    }
+}
+/* Slider */
+
+.slick-slider {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -ms-touch-action: pan-y;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+}
+.slick-list {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    &:focus {
+        outline: none;
+    }
+
+    &.dragging {
+        cursor: pointer;
+        cursor: hand;
+    }
+}
+.slick-slider .slick-track,
+.slick-slider .slick-list {
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+.slick-track {
+    position: relative;
+    left: 0;
+    top: 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+
+    &:after {
+        clear: both;
+    }
+
+    .slick-loading & {
+        visibility: hidden;
+    }
+}
+.slick-slide {
+    float: left;
+    height: 100%;
+    min-height: 1px;
+    [dir="rtl"] & {
+        float: right;
+    }
+    img {
+        display: block;
+    }
+    &.slick-loading img {
+        display: none;
+    }
+
+    display: none;
+
+    &.dragging img {
+        pointer-events: none;
+    }
+
+    .slick-initialized & {
+        display: block;
+        outline: none;
+    }
+
+    .slick-loading & {
+        visibility: hidden;
+    }
+
+    .slick-vertical & {
+        display: block;
+        height: auto;
+        border: 1px solid transparent;
+    }
+}
+.slick-arrow.slick-hidden {
+    display: none;
+}
+
+
+.slider {
+    width: 100%;
+    margin: 0 auto;
+}
+.slick-slide img {
+  width: 100%;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
+
+
+.slick-slide {
+  transition: all ease-in-out .3s;
+}
+/* ==========================================================================
+    Catagory iconized styles
+========================================================================== */
+.catagory-onslidePanel{
+    margin: 20px 0 0 0;
+}
+.carousal-product{
+    .slick-arrow{
+            width:30px;
+            height: 30px;
+            border:2px solid $graylight-color;
+            @include opacity(0);
+            &.slick-prev{
+                left:-40px;
+                &:after{
+                    font-size: 14px;
+                    line-height: 24px;
+                }
+            }
+            &.slick-next{
+                right:-40px;
+                &:after{
+                    font-size: 14px;
+                    line-height: 24px;
+                }
+            }
+        }
+        &:hover{
+            .slick-arrow{
+                @include opacity(1)
+            }
+        }
+    }
+.catagory-slider{
+    @extend %cardBox;
+
+    .catagory-slider__items{
+        .catagory-slider__itemsLink{
+            display: block;
+            text-decoration: none;
+            color: $text-color;
+            text-align: center;
+            padding: 25px 0px;
+            outline: none;
+            & > span{
+                display: block;
+                &.catagory-slider__items__icons{
+                    color: $secondary-color;
+                    font-size: 34px;
+                    margin-bottom: 15px;
+                }
+                &.catagory-slider__items__text{
+                    
+                }
+            }
+        }
+    }    
+} 
+/* ==========================================================================
+    sectionpanel styles
+========================================================================== */
+.sectionPanel{
+    margin:40px 0;
+    @include clearfix;
+    .sectionPanel__title{
+        margin:0 0 20px 0;
+        h2{
+            font-weight: 700;
+            font-size: 16px;
+            margin: 0;
+        }
+    }
+}
+.cardBox1{
+    @extend %cardBox;
+    padding: 0;
+    a{
+        color: $text-color;
+    }
+    .imagebox{
+    }
+    .textBox{
+        padding: 15px;
+        @extend %table;
+        .textBox_ft{
+            @extend %tablerow;
+            & > div{
+                @extend %tablecell;
+                vertical-align: top;
+                @include mediaQuery($max, $mobile){
+                    display: block;
+                    width: 100% !important;
+                    text-align: center;
+                }
+                h4{
+                    margin: 0;
+                    font-weight: normal;
+                    font-size: 14px;
+                    line-height: 20px
+                }
+                .rating{
+                    color: $secondary-color;
+                }
+                &:first-child{
+                    width: 70%;
+                }
+                .price__ft{
+                    font-size:16px;
+                    font-weight: 700; 
+                }
+            }
+        }
+    }
+    &:hover{
+        @include box-shadow(0px, 1px, 3px, rgba(0, 0, 0, 0.16)); 
+    }
+}
+.cardBox2{
+    @extend %cardBox;
+    @extend %table;
+    .cardBox2__itemsLink{
+        @include clearfix;
+        @extend %tablerow;
+        color: $text-color;
+        & > div{
+            @extend %tablecell;
+            width: 50%;
+        }
+        .imagebox{
+            background-color: $cardgray-color;
+        }
+        .textBox{
+            padding: 0 15px;
+            h3{
+                margin-top: 0;
+                font-size: 20px;
+                font-weight: 700; 
+                @include mediaQuery($min, $tablet){
+                    font-size: 16px;
+                }  
+            }
+        }
+    }
+    &.featured__cat{
+        @include mediaQuery(null, $tablet, $pre-desktop){
+            margin-bottom: 30px;
+        }
+        .textBox{
+            @include mediaQuery($min, $tablet){
+                height: 390px;
+            }
+           h3{
+               font-size: 20px;
+               font-weight: 700;
+               color: $text-color;
+               @include mediaQuery($min, $tablet){
+                text-transform: uppercase;
+                font-size: 24px;
+                }
+               
+           }
+           .button{
+               margin-top: 10px;
+           }
+        }
+    }
+    &.sthnew__cat{
+        .textBox{
+           h3{
+               font-size: 24px;
+               @include mediaQuery($max, $pre-tablet){
+                   font-size: 20px;
+               }
+           }
+        }
+    }
+}
+.partioned__grid{
+    .row{
+        &>div:last-child{
+            @include mediaQuery(null, $tablet, $pre-desktop){
+                padding: 0;
+                &>div{
+                    width: 50%;
+                    float: left;
+                    display: block;
+                    padding: 0 15px;
+                    box-shadow: none;
+                    background-color: transparent;
+                    .cardBox2__itemsLink{
+                        background-color: $white-color;
+                        @include box-shadow(0px, 1px, 3px, rgba(0, 0, 0, 0.16));
+                    }
+                }
+            }
+            &>div:first-child{
+                margin-bottom: 30px;
+            }
+        
+        }
+        &>div:first-child{
+            @include mediaQuery($max, $pre-tablet){
+                 margin-bottom: 30px;
+            }
+        }
+        @include mediaQuery(null, $pre-tablet, $screen){
+           &>div:last-child{
+               &>div{
+                   height: 180px;
+               }
+           }
+        }
+    }
+}
+.partioned__grid__two{
+    div[class*="col-"]{
+        margin-bottom: 30px;
+    }
+}
+.product-slider{
+    @extend %cardBox;
+}
+.cardBox3{
+    @extend %cardBox;
+    padding: 0;
+    @include mediaQuery($max, $desktop){
+        margin-bottom: 30px;
+    }
+    a{
+        color: $text-color;
+    }
+    .imagebox{
+        background-color:$cardgray-color; 
+    }
+    .textBox{
+        padding: 15px;
+        @extend %table;
+        .textBox_ft{
+            @extend %tablerow;
+            & > div{
+                @extend %tablecell;
+                vertical-align: top;
+                @include mediaQuery($max, $mobile){
+                    display: block;
+                    width: 100% !important;
+                    text-align: center;
+                }
+                h4{
+                    margin: 0;
+                    font-weight: normal;
+                    font-size: 14px;
+                    line-height: 20px
+                }
+                .rating{
+                    color: $secondary-color;
+                }
+                &:first-child{
+                    width: 70%;
+                }
+                .price__ft{
+                    font-size:16px;
+                    font-weight: 700; 
+                }
+            }
+        }
+    }
+    &:hover{
+        @include box-shadow(0px, 1px, 3px, rgba(0, 0, 0, 0.16)); 
+    }
+}
+.shippinginfoPanel{
+    background-image:url(../images/shippinginfo__bg.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 230px;
+    padding: 100px 0;
+    ul{
+        @extend %listfix;
+        @extend %table;
+        @extend %cardBox;
+        border-collapse: collapse;
+        li{
+            @extend %tablecell;
+            padding: 15px;
+            border-right: 1px solid $cardgray-color;
+            @include mediaQuery($max, $pre-tablet){
+            text-align: center;
+            font-size: 12px;
+            }
+            &:last-child{
+                border: none;
+            }
+            &>*{
+                display: inline-block;
+                vertical-align: middle;
+            }
+            .sip-icons{
+                font-size: 24px;
+                color: $secondary-color;
+                margin-right: 10px;
+            }
+        }
+    }
+}
+/* ==========================================================================
+    FooterPanel styles
+========================================================================== */
+.footerPanel{
+    background-color: $primary-color;
+    a{
+        color: $graylight-color;
+       
+    }
+    ul{
+        @extend %listfix;
+        a{
+            line-height: 24px;
+        }
+    }
+    .footerPanel__top{
+        padding-top: 50px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid  #292929;
+        @include mediaQuery($max, $pre-tablet){
+            ul{
+                margin-bottom: 30px;
+            }
+        }
+        h3{
+            font-size: 14px;
+            text-transform: uppercase;
+            color: $white-color;
+            font-weight: normal;
+            margin: 0 0 15px 0;
+        }
+        .ft-socialLinks{
+            margin-bottom: 30px;
+            ul{
+                @include clearfix;
+                li{
+                    display:block;
+                    float: left;
+                    margin-right: 20px;
+                    &:last-child{
+                        margin: 0;
+                    }
+                    a{
+                        font-size: 24px;
+                    }
+                }
+            }
+        }
+        .ft-newsletter{
+            .newsletter{
+                .newsletter__form{
+                    position: relative;
+                    input{
+                        padding-right: 100px;
+                    }
+                    button{
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        height: 100%;
+                        border: none;
+                        background-color: transparent;
+                        font:0/0 normal;
+                        width: 60px;
+                        &:after{
+                            position: inherit;
+                            position: inherit;
+                            content: "\f30f";
+                            font-family: "Ionicons";
+                            speak: none;
+                            font-style: normal;
+                            font-weight: normal;
+                            font-size: 24px;
+                            width: 100%;
+                            left: 0;
+                            height: 100%;
+                            top: 0;
+                            text-align: center;
+                            line-height: 45px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .footerPanel__bottom{
+        color: #757575;
+        padding: 15px 0;
+        font-size: 12px;
+        a{
+          color: #757575;  
+        }
+        .footerPanel__bottom__left{
+            @include mediaQuery($max, $pre-tablet){
+                padding-bottom: 10px;
+                .ft-logo{
+                    padding-bottom: 10px;
+                }
+                .ft-terms{
+                    a:first-child{
+                        margin-left: 0;
+                    }
+                }
+            }
+            &>div{
+                display: inline-block;
+                vertical-align:middle; 
+                &.ft-logo{
+                    margin-right: 10px;
+                    img{
+                        width: 100px;
+                    }
+                }
+                &.ft-terms{
+                    a{
+                        margin: 0px 10px;
+                    }
                 }
             }
         }
